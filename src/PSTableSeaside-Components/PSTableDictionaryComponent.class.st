@@ -49,26 +49,16 @@ PSTableDictionaryComponent >> render: html with: anObject [
 ]
 
 { #category : #rendering }
-PSTableDictionaryComponent >> renderTableBodyOn: html [
-	"Return body on html"
+PSTableDictionaryComponent >> renderRowsOfPageOn: html [
+	"Render rows of a page on html"
 
-	html tableBody
-		id: tableId, '-body';
-		with: [ 
-			(self filteredListObject isEmpty and: [ self searchingText isNotEmpty ])
-				ifTrue: [ 
-				 	html tableRow: [
-						html mdlTableCell 
-							colSpan: self headers size; 
-							nonNumerical;
-							style: 'text-align: center;'; 
-							with: 'No matching results found' ] ]
-				ifFalse: [ 
-		(self rowsOfPage)
-			keysAndValuesDo: [ :keyObject :object  |
-						html tableRow: [ 
-						html mdlTableCell nonNumerical; with: keyObject.
-						self render: html with: object ] ] ] ]
+	(self rowsOfPage)
+		keysAndValuesDo: [ :keyObject :object | 
+			html
+				tableRow: [ html mdlTableCell
+						nonNumerical;
+						with: keyObject.
+					self render: html with: object ] ]
 ]
 
 { #category : #accessing }

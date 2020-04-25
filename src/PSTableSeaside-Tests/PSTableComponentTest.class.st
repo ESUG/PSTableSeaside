@@ -99,13 +99,13 @@ PSTableComponentTest >> testHeaders [
 ]
 
 { #category : #tests }
-PSTableComponentTest >> testIsLimitPerPageEqualToListObjectSize [
+PSTableComponentTest >> testIsLimitPerPageEqualOrLessToListObjectSize [
 
 	psTable listObject: self orderedCollectionTest.
 	psTable limitPerPage: 2.
-	self assert: psTable isLimitPerPageEqualToListObjectSize equals: false.
+	self assert: psTable isLimitPerPageEqualOrLessToListObjectSize equals: false.
 	psTable limitPerPage: 5.
-	self assert: psTable isLimitPerPageEqualToListObjectSize equals: true.
+	self assert: psTable isLimitPerPageEqualOrLessToListObjectSize equals: true.
 ]
 
 { #category : #tests }

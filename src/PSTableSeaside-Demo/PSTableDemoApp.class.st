@@ -81,6 +81,7 @@ PSTableDemoApp >> initialize [
 						headers: self headerWithOptions;
 						listObject: listContactTwo;
 						disablePagination: true;
+						disableSearching: true;
 						tableId: 'table-pagination-2';
 						blockToExecute: self blockTableToExecute;
 						listToRenderButton: self listDataToRenderButtonTwo;
@@ -201,7 +202,7 @@ PSTableDemoApp >> renderContentOn: html [
 			html render: tableOne.
 			html heading
 				level: 2;
-				with: 'Table Two: Render a table with a disable pagination'.
+				with: 'Table Two: Render a table with a disable pagination and  a disable searching bar'.
 			html render: tableTwo.
 			html heading
 				level: 2;

@@ -129,6 +129,14 @@ PSTableComponent >> firstPageShowed [
 		ifTrue: [ ^ self currentPage - self limitPageShowed max: self currentPage ]
 ]
 
+{ #category : #validation }
+PSTableComponent >> haveAnyRowFiltered [
+	"Return true if there are any row in a filtered result"
+
+	^ self filteredListObject isEmpty
+		and: [ self searchingText isNotEmpty ]
+]
+
 { #category : #accessing }
 PSTableComponent >> headers [
 
@@ -161,10 +169,10 @@ PSTableComponent >> initializeList [
 ]
 
 { #category : #validation }
-PSTableComponent >> isLimitPerPageEqualToListObjectSize [
+PSTableComponent >> isLimitPerPageEqualOrLessToListObjectSize [
 	"Return true if the limit per page is the same as the list object size"
 
-	^ self limitPerPage = self filteredListObject size
+	^ (self limitPerPage >= self filteredListObject size)
 ]
 
 { #category : #validation }
@@ -399,8 +407,8 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 { #category : #rendering }
 PSTableComponent >> renderContentOn: html [
 	"Render the table with the pagination option bar on html"
-
-	self renderSearchingBarOn: html.
+	(self disableSearching)
+		ifFalse: [ self renderSearchingBarOn: html ].
 	self renderTableSectionOn: html
 ]
 
@@ -421,6 +429,17 @@ PSTableComponent >> renderNextButtonsOn: html [
 
 	self renderButtonNextPageOn: html.
 	self renderButtonLastPageOn: html
+]
+
+{ #category : #'rendering-table' }
+PSTableComponent >> renderNoResultRowOn: html [
+
+	html tableRow: [
+			html mdlTableCell 
+				colSpan: self headers size; 
+				nonNumerical;
+				style: 'text-align: center;'; 
+				with: 'No matching results found' ]
 ]
 
 { #category : #'rendering-pagination' }
@@ -457,7 +476,7 @@ PSTableComponent >> renderPaginationBarOn: html [
 	"Render pagination bar on html"
 
 	(self disablePagination
-		or: [ self isLimitPerPageEqualToListObjectSize ])
+		or: [ self isLimitPerPageEqualOrLessToListObjectSize ])
 		ifFalse: [ html div
 				id: 'page-bar-options';
 				style: 'display: flex; justify-content: space-evenly; padding: 10px 0px;';
@@ -476,20 +495,30 @@ PSTableComponent >> renderPreviousButtonsOn: html [
 	self renderButtonPreviousPageOn: html
 ]
 
+{ #category : #'rendering-table' }
+PSTableComponent >> renderRowsOfPageOn: html [
+	"Render rows of a page on html"
+	
+	self subclassResponsibility
+]
+
+{ #category : #'rendering-table' }
+PSTableComponent >> renderRowsOn: html [
+	^ self haveAnyRowFiltered
+		ifTrue: [ self renderNoResultRowOn: html ]
+		ifFalse: [ self renderRowsOfPageOn: html ]
+]
+
 { #category : #'rendering-searching' }
 PSTableComponent >> renderSearchingBarOn: html [
 
 	html div
-		id: 'searching-bar';
-		style: '
-		    display: flex;
-    justify-content: flex-end;
-    border: 1px solid rgba(0,0,0,.12);
-    border-collapse: collapse;
-    padding: 0px 10px;';
+		id: self tableId asString, '-searching-bar';
+		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px;';
 		with: [
 			html mdlTextFieldContainer 
 			floatingLabel;
+			style: 'width: 200px;';
 				with: [ 
 				html mdlTextFieldLabel
 					for: self tableId asString, '-searchInputTable';
@@ -505,7 +534,9 @@ PSTableComponent >> renderSearchingBarOn: html [
 PSTableComponent >> renderTableBodyOn: html [
 	"Render table Body on html"
 
-	self subclassResponsibility
+	html tableBody
+		id: self tableId asString , '-body';
+		with: [ self renderRowsOn: html ]
 ]
 
 { #category : #'rendering-table' }
@@ -576,14 +607,17 @@ PSTableComponent >> updateContentTableOn: html [
 
 	^ html jQuery
 		script: [ :s | 
-			(s << (html jQuery id: self tableId) load)
+			(s << (html jQuery id: self tableId asString) load)
 				html: [ :ajaxHtml | self renderTableSectionOn: ajaxHtml ];
 				onComplete: 'componentHandler.upgradeDom();' ]
 ]
 
 { #category : #'rendering-searching' }
-PSTableComponent >> validateFilterOf: object [
-	| objectElements |
-	objectElements := (object copy) select: [ :elem | elem includesSubstring: self searchingText caseSensitive: false ].
-	^ (objectElements isNotEmpty)
+PSTableComponent >> validateFilterOf: aObject [
+	
+	| objectsMatch objectContainer |
+	objectContainer := aObject copy.
+	objectsMatch := objectContainer 
+		select: [ :elem | elem includesSubstring: self searchingText caseSensitive: false ].
+	^ (objectsMatch isNotEmpty)
 ]

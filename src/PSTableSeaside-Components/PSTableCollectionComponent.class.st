@@ -42,25 +42,13 @@ PSTableCollectionComponent >> render: html with: anObject [
 	self subclassResponsibility
 ]
 
-{ #category : #rendering }
-PSTableCollectionComponent >> renderTableBodyOn: html [
-	"Render table body on html"
+{ #category : #'rendering-table' }
+PSTableCollectionComponent >> renderRowsOfPageOn: html [
+	"Render rows of a page on html"
 	
-	html tableBody
-		id: tableId, '-body';
-		with: [ 
-			(self filteredListObject isEmpty and: [ self searchingText isNotEmpty ])
-				ifTrue: [ 
-				 	html tableRow: [
-						html mdlTableCell 
-							colSpan: self headers size; 
-							nonNumerical;
-							style: 'text-align: center;'; 
-							with: 'No matching results found' ] ]
-				ifFalse: [ 
-		(self rowsOfPage)
+	(self rowsOfPage)
 			do: [ :object |
-						html tableRow: [ self render: html with: object ] ] ] ]
+						html tableRow: [ self render: html with: object ] ]
 ]
 
 { #category : #accessing }
