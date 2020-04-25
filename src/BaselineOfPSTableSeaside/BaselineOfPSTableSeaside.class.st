@@ -21,9 +21,9 @@ BaselineOfPSTableSeaside >> baseline: spec [
 		do: [
 			self setUpDependencies: spec.
 			spec
-				package: 'TablePaginationSeaside-Components'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
-				package: 'TablePaginationSeaside-Demo'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
-				package: 'TablePaginationSeaside-Tests' with: [ spec requires: 'Seaside3' ] ]
+				package: 'PSTableSeaside-Components'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
+				package: 'PSTableSeaside-Demo'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
+				package: 'PSTableSeaside-Tests' with: [ spec requires: 'Seaside3' ] ]
 ]
 
 { #category : #initialization }
