@@ -23,7 +23,8 @@ Class {
 		'renderBlock',
 		'limitPageShowed',
 		'searchingText',
-		'filteredListObject'
+		'filteredListObject',
+		'disableSearching'
 	],
 	#category : #'PSTableSeaside-Components'
 }
@@ -61,6 +62,18 @@ PSTableComponent >> disablePagination: aBoolean [
 	"Option to disable pagination. The defect value is false"
 
 	disablePagination := aBoolean
+]
+
+{ #category : #accessing }
+PSTableComponent >> disableSearching [
+
+	^ disableSearching
+]
+
+{ #category : #accessing }
+PSTableComponent >> disableSearching: aBoolean [
+
+	disableSearching := aBoolean
 ]
 
 { #category : #'ajax-events' }
@@ -133,8 +146,10 @@ PSTableComponent >> headers: aCollection [
 PSTableComponent >> initialize [
 
 	limitPerPage := 0.
+	headers := OrderedCollection new.
 	currentPage := 1.
 	disablePagination := false.
+	disableSearching := false.
 	limitPageShowed := 5.
 	searchingText := ''
 ]
