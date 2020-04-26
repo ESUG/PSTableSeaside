@@ -153,7 +153,7 @@ PSTableComponent >> headers: aCollection [
 { #category : #initialization }
 PSTableComponent >> initialize [
 
-	limitPerPage := 0.
+	limitPerPage := 1.
 	headers := OrderedCollection new.
 	currentPage := 1.
 	disablePagination := false.
