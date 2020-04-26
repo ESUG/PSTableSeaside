@@ -407,9 +407,13 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 { #category : #rendering }
 PSTableComponent >> renderContentOn: html [
 	"Render the table with the pagination option bar on html"
-	(self disableSearching)
-		ifFalse: [ self renderSearchingBarOn: html ].
-	self renderTableSectionOn: html
+
+		(self disableSearching)
+			ifFalse: [ self renderSearchingBarOn: html ].
+		html div
+			style: 'overflow-x: auto;';
+			with: [
+				self renderTableSectionOn: html ]
 ]
 
 { #category : #'rendering-pagination' }
@@ -514,11 +518,11 @@ PSTableComponent >> renderSearchingBarOn: html [
 
 	html div
 		id: self tableId asString, '-searching-bar';
-		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px;';
+		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px';
 		with: [
 			html mdlTextFieldContainer 
 			floatingLabel;
-			style: 'width: 200px;';
+			style: 'width: 200px; margin 0px 10px';
 				with: [ 
 				html mdlTextFieldLabel
 					for: self tableId asString, '-searchInputTable';
