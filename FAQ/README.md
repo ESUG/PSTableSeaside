@@ -9,8 +9,8 @@ PSTableSeaside is a package that you can use to create multiple tables with pagi
 If you want to create a table you need to select the type of table that you want to use.
 There are two types of tables to create with PSTableSeaside:
 
-* [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/edit/master/FAQ/README.md#implement-a-collection-table)
-* [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/edit/master/FAQ/README.md#implement-a-dictionary-table)
+* [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-collection-table)
+* [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-dictionary-table)
 
 ## Implement a Collection Table
 
