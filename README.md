@@ -23,4 +23,4 @@ Metacello new
  load.
 ```
 
-If you want to learn how to use **PSTableSeaside** packages, you can go directly to the [project wiki](https://github.com/daniapq/PSTableSeaside/wiki) or go to the [tutorial]()
+If you want to learn how to use **PSTableSeaside** packages, you can go directly to the [project wiki](https://github.com/daniapq/PSTableSeaside/wiki) or go to the [tutorial](https://github.com/daniapq/PSTableSeaside/tree/master/FAQ)
