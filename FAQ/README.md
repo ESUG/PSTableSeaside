@@ -17,6 +17,8 @@ There are two types of tables to create with PSTableSeaside:
 * [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-collection-table)
 * [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-dictionary-table)
 
+![Table Created](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/tableCreated.png?raw=true)
+
 ## Implement a Collection Table
 
 If you want to use this type of table, you need to inherit from class **PSTableCollectionComponent**. I will take as example the following table:
@@ -27,7 +29,6 @@ PSTableCollectionComponent subclass: #ExampleTable
 	classVariableNames: ''
 	package: 'ExamplePackage'
 ```
-
 
 ## Implement a Dictionary Table
 
@@ -60,7 +61,7 @@ ExampleTable new
   headers: self headers;
   listObject: self contacts;
   tableId: 'example-table';
-  limitPerPage: 2.
+  limitPerPage: 5.
 ```
 ## Explaining the variables
 
@@ -75,6 +76,8 @@ There are four important variables that you need to assign a value if you want r
 
 The pagination bar is an option to display the rows of your tables divided into pages.
 
+![Pagination bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/paginationBar.png?raw=true)
+
 ## Disable pagination bar
 
 If you want to disable the pagination bar, you need to add the following attribute with the following value:
@@ -84,9 +87,9 @@ ExampleTable new
   headers: self headers;
   listObject: self contacts;
   tableId: 'example-table';
-  limitPerPage: 2;
   disablePagination: true.
 ```
+![Disable Pagination](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/disablePagination.png?raw=true)
 
 By default, the pagination bar is not disabled
 
@@ -99,11 +102,13 @@ ExampleTable new
   headers: self headers;
   listObject: self contacts;
   tableId: 'example-table';
-  limitPerPage: 2;
-  limitPageShowed: 3.
+  limitPerPage: 5;
+  limitPageShowed: 2.
 ```
 
-The given value shows only three buttons in your table, apart from the button of the current page. If you have more than four pages, the pagination bar will cycle through the buttons according to the current page.
+![Change Pagination options](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/changeOptionPagination.png?raw=true)
+
+The given value shows only two buttons in your table, apart from the button of the current page. If you have more than Three pages, the pagination bar will cycle through the buttons according to the current page.
 
 # Searching bar
 
@@ -118,7 +123,7 @@ ExampleTable new
   headers: self headers;
   listObject: self contacts;
   tableId: 'example-table';
-  limitPerPage: 2;
+  limitPerPage: 5;
   disableSearching: true.
 ```
 
