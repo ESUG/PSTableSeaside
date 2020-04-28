@@ -114,6 +114,8 @@ The given value shows only two buttons in your table, apart from the button of t
 
 The searching bar is an option to filter the rows of your table with a simple filter or the possibility to create your own filter.
 
+![Searching bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/searchingBar.png?raw=true)
+
 ## Disable Searching bar
 
 If you want to disable the searching bar, you need to add the following attribute with the following value:
@@ -126,6 +128,8 @@ ExampleTable new
   limitPerPage: 5;
   disableSearching: true.
 ```
+
+![Disable searching](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/disableSearching.png?raw=true)
 
 By default, the searching bar is not disabled
 
@@ -142,3 +146,5 @@ validateFilterOf: anObject
 ```
 
 The method must return a boolean value.
+
+![Filter example](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/images/filterExample.png?raw=true)
