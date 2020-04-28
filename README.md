@@ -14,7 +14,7 @@ You can get both by downloading it from the [Pharo](http://pharo.org) site or in
 wget -O- get.pharo.org | bash
 ```
 
-To load the TablePaginationSeaside packages into the Pharo image:
+To load the PSTableSeaside packages into the Pharo image:
 
 ```Smalltalk
 Metacello new
@@ -22,3 +22,5 @@ Metacello new
  repository: 'github://daniapq/PSTableSeaside:master/src';
  load.
 ```
+
+If you want to learn how to use **PSTableSeaside** packages, you can go directly to the project [wiki](https://github.com/daniapq/PSTableSeaside/wiki) or go to the [tutorial]()
