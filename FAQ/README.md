@@ -1,16 +1,21 @@
 # PSTableSeaside
 
-PSTableSeaside is a package that you can use to create multiple tables with pagination or searching bar to filter or searching rows in your application.
+PSTableSeaside is a package that you can use to create multiple tables with pagination or searching bar to filter or searching rows in your application. In this tutorial I explain how to:
 
-
+* [Create a table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#create-a-table)
+* [Show table rows](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#show-your-table-rows)
+* [Disable the pagination bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#disable-pagination-bar)
+* [Change options of pagination bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#change-options-of-pagination-bar)
+* [Disable the searching bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#disable-searching-bar)
+* [Change filter of the searching bar](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#change-filter-of-searching-bar)
 
 # Create a table
 
 If you want to create a table you need to select the type of table that you want to use.
 There are two types of tables to create with PSTableSeaside:
 
-* [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-collection-table)
-* [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-dictionary-table)
+* [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-collection-table)
+* [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#implement-a-dictionary-table)
 
 ## Implement a Collection Table
 
@@ -35,7 +40,7 @@ PSTableDictionaryComponent subclass: #ExampleTable
 	package: 'ExamplePackage'
 ```
 
-## Overriden methods
+## Show your table rows
 
 You need to override the method **render:with:** if you want to show the rows of your table. An example is the following code:
 
@@ -48,7 +53,7 @@ render: html with: anObject
    ].
 ```
 
-Now, you can create a table with the following variables and values ​​if you want to render your table on your page
+Now, you can create a table with the following [variables](https://github.com/daniapq/PSTableSeaside/blob/master/FAQ/README.md#explaining-the-variables) if you want to render the table on your page:
 
 ```
 ExampleTable new
@@ -119,7 +124,7 @@ ExampleTable new
 
 By default, the searching bar is not disabled
 
-## Functionality of searching bar
+## Change filter of searching bar
 
 By default, the class has a simple filter for rows. If you want to customize your filter or the default filter does not work, the method shown below must be overwritten:
 
