@@ -2,13 +2,15 @@
 
 PSTableSeaside is a package that you can use to create multiple tables with pagination or searching bar to filter or searching rows in your application.
 
+
+
+# Create a table
+
 If you want to create a table you need to select the type of table that you want to use.
 There are two types of tables to create with PSTableSeaside:
 
-* A Ordered Dictionary table
-* A Ordered Collection table
-
-# Create a table
+* [A Ordered Dictionary table](https://github.com/daniapq/PSTableSeaside/edit/master/FAQ/README.md#implement-a-collection-table)
+* [A Ordered Collection table](https://github.com/daniapq/PSTableSeaside/edit/master/FAQ/README.md#implement-a-dictionary-table)
 
 ## Implement a Collection Table
 
