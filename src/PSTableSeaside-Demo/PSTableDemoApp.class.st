@@ -73,11 +73,11 @@ PSTableDemoApp >> initialize [
 						headers: self headerWithOptions;
 						listObject: listContactOne;
 						tableId: 'table-pagination-1';
-						limitPerPage: 7;
+						limitPerPage: 10;
 						blockToExecute: self blockTableToExecute;
 						listToRenderButton: self listDataToRenderButtonOne;
 						dictToRenderDownloadButton: Dictionary new.
-	tableTwo := ExampleTable new
+	"tableTwo := ExampleTable new
 						headers: self headerWithOptions;
 						listObject: listContactTwo;
 						disablePagination: true;
@@ -101,7 +101,7 @@ PSTableDemoApp >> initialize [
 						listObject: self orderedCollectionContact;
 						tableId: 'table-pagination-5';
 						limitPerPage: 2;
-						limitPageShowed: 3.
+						limitPageShowed: 3."
 ]
 
 { #category : #accessing }
@@ -159,6 +159,90 @@ PSTableDemoApp >> orderedCollectionContact [
 		add: #('19' 'Cristopher Thomson' 'cristopher@mail.com' 'Male');
 		add: #('20' 'William Davis' 'william@mail.com' 'Male');
 		add: #('21' 'Steve Anderson' 'steve@mail.com' 'Male');
+		add: #('22' 'Dan Marsh' 'dan@mail.com' 'Male');
+		add: #('23' 'Ben Diaz' 'ben@mail.com' 'Male'); 
+		add: #('24' 'Ann Kisaragi' 'ann@mail.com' 'Female'); 
+		add: #('25' 'Bob Jones' 'bob@mail.com' 'Male');
+		add: #('26' 'Bill Martinez' 'bill@mail.com' 'Male'); 
+		add: #('27' 'Jenny Klein' 'jenny@mail.com' 'Female');
+		add: #('28' 'Samantha Martinez' 'dany@mail.com' 'Female');
+		add: #('29' 'Jan Bourne' 'jan@mail.com' 'Female'); 
+		add: #('30' 'Al Bourne' 'al@mail.com' 'Male'); 
+		add: #('31' 'Jhon Hall' 'jhon@mail.com' 'Male');
+		add: #('32' 'Melissa Price' 'melissa@mail.com' 'Female'); 
+		add: #('33' 'Sarah Baldwin' 'sarah@mail.com' 'Female');
+		add: #('34' 'Jessica Price' 'jessica@mail.com' 'Female');
+		add: #('35' 'Tyler Payne' 'tyler@mail.com' 'Male'); 
+		add: #('36' 'Ashton Wallace' 'ashton@mail.com' 'Male'); 
+		add: #('37' 'Karen Morrison' 'karen@mail.com' 'Female');
+		add: #('38' 'Jule Stanton' 'jule@mail.com' 'Female');
+		add: #('39' 'Cris Maxwell' 'cris@mail.com' 'Male');
+		add: #('40' 'Cristopher Thomson' 'cristopher@mail.com' 'Male');
+		add: #('41' 'William Davis' 'william@mail.com' 'Male');
+		add: #('42' 'Steve Anderson' 'steve@mail.com' 'Male');
+		add: #('43' 'Dan Marsh' 'dan@mail.com' 'Male');
+		add: #('44' 'Ben Diaz' 'ben@mail.com' 'Male'); 
+		add: #('45' 'Ann Kisaragi' 'ann@mail.com' 'Female'); 
+		add: #('46' 'Bob Jones' 'bob@mail.com' 'Male');
+		add: #('47' 'Bill Martinez' 'bill@mail.com' 'Male'); 
+		add: #('48' 'Jenny Klein' 'jenny@mail.com' 'Female');
+		add: #('49' 'Samantha Martinez' 'dany@mail.com' 'Female');
+		add: #('50' 'Jan Bourne' 'jan@mail.com' 'Female'); 
+		add: #('51' 'Al Bourne' 'al@mail.com' 'Male'); 
+		add: #('52' 'Jhon Hall' 'jhon@mail.com' 'Male');
+		add: #('53' 'Melissa Price' 'melissa@mail.com' 'Female'); 
+		add: #('54' 'Sarah Baldwin' 'sarah@mail.com' 'Female');
+		add: #('55' 'Jessica Price' 'jessica@mail.com' 'Female');
+		add: #('56' 'Tyler Payne' 'tyler@mail.com' 'Male'); 
+		add: #('57' 'Ashton Wallace' 'ashton@mail.com' 'Male'); 
+		add: #('58' 'Karen Morrison' 'karen@mail.com' 'Female');
+		add: #('59' 'Jule Stanton' 'jule@mail.com' 'Female');
+		add: #('60' 'Cris Maxwell' 'cris@mail.com' 'Male');
+		add: #('61' 'Cristopher Thomson' 'cristopher@mail.com' 'Male');
+		add: #('62' 'William Davis' 'william@mail.com' 'Male');
+		add: #('63' 'Steve Anderson' 'steve@mail.com' 'Male');
+		add: #('64' 'Dan Marsh' 'dan@mail.com' 'Male');
+		add: #('65' 'Ben Diaz' 'ben@mail.com' 'Male'); 
+		add: #('66' 'Ann Kisaragi' 'ann@mail.com' 'Female'); 
+		add: #('67' 'Bob Jones' 'bob@mail.com' 'Male');
+		add: #('68' 'Bill Martinez' 'bill@mail.com' 'Male'); 
+		add: #('69' 'Jenny Klein' 'jenny@mail.com' 'Female');
+		add: #('70' 'Samantha Martinez' 'dany@mail.com' 'Female');
+		add: #('71' 'Jan Bourne' 'jan@mail.com' 'Female'); 
+		add: #('72' 'Al Bourne' 'al@mail.com' 'Male'); 
+		add: #('73' 'Jhon Hall' 'jhon@mail.com' 'Male');
+		add: #('74' 'Melissa Price' 'melissa@mail.com' 'Female'); 
+		add: #('75' 'Sarah Baldwin' 'sarah@mail.com' 'Female');
+		add: #('76' 'Jessica Price' 'jessica@mail.com' 'Female');
+		add: #('77' 'Tyler Payne' 'tyler@mail.com' 'Male'); 
+		add: #('78' 'Ashton Wallace' 'ashton@mail.com' 'Male'); 
+		add: #('79' 'Karen Morrison' 'karen@mail.com' 'Female');
+		add: #('80' 'Jule Stanton' 'jule@mail.com' 'Female');
+		add: #('81' 'Cris Maxwell' 'cris@mail.com' 'Male');
+		add: #('82' 'Cristopher Thomson' 'cristopher@mail.com' 'Male');
+		add: #('83' 'William Davis' 'william@mail.com' 'Male');
+		add: #('84' 'Steve Anderson' 'steve@mail.com' 'Male');
+		add: #('85' 'Dan Marsh' 'dan@mail.com' 'Male');
+		add: #('86' 'Ben Diaz' 'ben@mail.com' 'Male'); 
+		add: #('87' 'Ann Kisaragi' 'ann@mail.com' 'Female'); 
+		add: #('88' 'Bob Jones' 'bob@mail.com' 'Male');
+		add: #('89' 'Bill Martinez' 'bill@mail.com' 'Male'); 
+		add: #('90' 'Jenny Klein' 'jenny@mail.com' 'Female');
+		add: #('91' 'Samantha Martinez' 'dany@mail.com' 'Female');
+		add: #('92' 'Jan Bourne' 'jan@mail.com' 'Female'); 
+		add: #('93' 'Al Bourne' 'al@mail.com' 'Male'); 
+		add: #('94' 'Jhon Hall' 'jhon@mail.com' 'Male');
+		add: #('95' 'Melissa Price' 'melissa@mail.com' 'Female'); 
+		add: #('96' 'Sarah Baldwin' 'sarah@mail.com' 'Female');
+		add: #('97' 'Jessica Price' 'jessica@mail.com' 'Female');
+		add: #('98' 'Tyler Payne' 'tyler@mail.com' 'Male'); 
+		add: #('99' 'Ashton Wallace' 'ashton@mail.com' 'Male'); 
+		add: #('100' 'Karen Morrison' 'karen@mail.com' 'Female');
+		add: #('101' 'Jule Stanton' 'jule@mail.com' 'Female');
+		add: #('102' 'Cris Maxwell' 'cris@mail.com' 'Male');
+		add: #('103' 'Cristopher Thomson' 'cristopher@mail.com' 'Male');
+		add: #('104' 'William Davis' 'william@mail.com' 'Male');
+		add: #('105' 'Steve Anderson' 'steve@mail.com' 'Male');
 		yourself
 ]
 

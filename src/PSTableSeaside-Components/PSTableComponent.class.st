@@ -85,6 +85,15 @@ PSTableComponent >> executeCallback: aCallback on: html [
 		onSuccess: (self updateContentTableOn: html)
 ]
 
+{ #category : #'ajax-events' }
+PSTableComponent >> executePaginationCallback: aCallback on: html [
+
+	^ html jQuery ajax
+		callback: aCallback;
+		context: 'this' js;
+		onSuccess: (self updateContentTableOn: html)
+]
+
 { #category : #'rendering-searching' }
 PSTableComponent >> filterRowsOn: html [
 	^ html jQuery ajax
@@ -172,7 +181,7 @@ PSTableComponent >> initializeList [
 PSTableComponent >> isLimitPerPageEqualOrLessToListObjectSize [
 	"Return true if the limit per page is the same as the list object size"
 
-	^ (self limitPerPage >= self filteredListObject size)
+	^ (self limitPerPage > self filteredListObject size)
 ]
 
 { #category : #validation }
@@ -331,7 +340,7 @@ PSTableComponent >> renderButtonFirstPageOn: html [
 				id: 'firstPageButtonPagination';
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self firstPage ] on: html);
+				onClick: (self executePaginationCallback: [ self firstPage ] on: html);
 				with: 'first' ]
 ]
 
@@ -348,7 +357,7 @@ PSTableComponent >> renderButtonLastPageOn: html [
 				id: 'lastButtonPagination';
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self lastPage ] on: html);
+				onClick: (self executePaginationCallback: [ self lastPage ] on: html);
 				with: 'last' ]
 ]
 
@@ -366,7 +375,7 @@ PSTableComponent >> renderButtonNextPageOn: html [
 				raised;
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self nextPage ] on: html);
+				onClick: (self executePaginationCallback: [ self nextPage ] on: html);
 				with: 'next' ]
 ]
 
@@ -382,7 +391,7 @@ PSTableComponent >> renderButtonOfPage: aPage on: html [
 		ifFalse: [ html mdlButton
 				raised;
 				id: 'buttonPagination' , aPage printString;
-				onClick: (self executeCallback: [ self pageOf: aPage ] on: html);
+				onClick: (self executePaginationCallback: [ self pageOf: aPage ] on: html);
 				with: aPage printString ]
 ]
 
@@ -400,7 +409,7 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 				raised;
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self previousPage ] on: html);
+				onClick: (self executePaginationCallback: [ self previousPage ] on: html);
 				with: 'prev' ]
 ]
 
@@ -408,12 +417,17 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 PSTableComponent >> renderContentOn: html [
 	"Render the table with the pagination option bar on html"
 
-		(self disableSearching)
+		html div
+			id: self tableId asString, '-page-bar-top';
+			with: [ self renderPaginationBarOn: html ].
+		self disableSearching
 			ifFalse: [ self renderSearchingBarOn: html ].
 		html div
 			style: 'overflow-x: auto;';
-			with: [
-				self renderTableSectionOn: html ]
+			with: [ self renderTableSectionOn: html ].
+		html div
+			id: self tableId asString, '-page-bar-bottom';
+			with: [ self renderPaginationBarOn: html ]
 ]
 
 { #category : #'rendering-pagination' }
@@ -478,17 +492,17 @@ PSTableComponent >> renderPaginatedTableOn: html [
 { #category : #'rendering-pagination' }
 PSTableComponent >> renderPaginationBarOn: html [
 	"Render pagination bar on html"
-
-	(self disablePagination
-		or: [ self isLimitPerPageEqualOrLessToListObjectSize ])
-		ifFalse: [ html div
+	"(self disablePagination
+		or: [ self limitPerPage  (self filteredListObject size) ])
+		ifFalse: [ ^ nil ]
+		ifTrue: [  ]"
+	html div
 				id: 'page-bar-options';
 				style: 'display: flex; justify-content: space-evenly; padding: 10px 0px;';
 				with: [ 
 					self renderPreviousButtonsOn: html.
 					self renderPageButtonsOn: html.
-					self renderNextButtonsOn: html ] ]
-		ifTrue: [ ^ nil ]
+					self renderNextButtonsOn: html ]
 ]
 
 { #category : #'rendering-pagination' }
@@ -518,8 +532,11 @@ PSTableComponent >> renderSearchingBarOn: html [
 
 	html div
 		id: self tableId asString, '-searching-bar';
-		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px';
+		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px; display: flex;
+    justify-content: space-between;';
 		with: [
+			html div
+			with: [
 			html mdlTextFieldContainer 
 			floatingLabel;
 			style: 'width: 200px; margin 0px 10px';
@@ -531,7 +548,28 @@ PSTableComponent >> renderSearchingBarOn: html [
 					value: self searchingText;
 					onInput: (self filterRowsOn: html);
 					noAutocomplete;
-					id: self tableId asString, '-searchInputTable' ] ]
+					id: self tableId asString, '-searchInputTable' ] ].
+		html div
+			style: 'display: flex';
+			with: [
+			html div
+			style: 'align-self: center; margin: 0px 20px';
+			with: [
+			html label: 'Rows per page: ' ].
+			html div
+			style: 'width: 60px;';
+			with: [
+			html
+		render:
+			(MDLSelectWidget new
+				labelBlock: #asString;
+				possibilities: #(10 25 50 100);
+				callback: [ :o | limitPerPage := o.
+									  currentPage := 1 ];
+				selectedObject: limitPerPage;
+				sortBlock: [ :a :b | a asInteger <= b asInteger ];
+				customizationBlock: [ :textField :renderer | textField onChange: (html jQuery ajax serializeThis onComplete: (self updateContentTableOn: html)) ];
+				yourself) ] ] ].
 ]
 
 { #category : #'rendering-table' }
@@ -559,9 +597,8 @@ PSTableComponent >> renderTableHeadersOn: html [
 PSTableComponent >> renderTableSectionOn: html [
 	html div
 		id: tableId;
-		with: [ 
-			self renderPaginatedTableOn: html.
-			self renderPaginationBarOn: html ]
+		with: [
+			self renderPaginatedTableOn: html ]
 ]
 
 { #category : #accessing }
@@ -612,7 +649,28 @@ PSTableComponent >> updateContentTableOn: html [
 	^ html jQuery
 		script: [ :s | 
 			(s << (html jQuery id: self tableId asString) load)
-				html: [ :ajaxHtml | self renderTableSectionOn: ajaxHtml ];
+				html: [ :ajaxHtml |
+					self renderTableSectionOn: ajaxHtml ];
+				onComplete: 'componentHandler.upgradeDom();'.
+			(s << (html jQuery id: self tableId asString, '-page-bar-top') load)
+				html: [ :ajaxHtml |
+					self renderPaginationBarOn: ajaxHtml ];
+				onComplete: 'componentHandler.upgradeDom();'.
+			(s << (html jQuery id: self tableId asString, '-page-bar-bottom') load)
+				html: [ :ajaxHtml |
+					self renderPaginationBarOn: ajaxHtml ];
+				onComplete: 'componentHandler.upgradeDom();' ]
+]
+
+{ #category : #'ajax-events' }
+PSTableComponent >> updatePaginationOn: html [
+	"Update the content of table with the given id"
+
+	html jQuery
+		script: [ :s | 
+			(s << (html jQuery id: 'page-bar') load)
+				html: [ :ajaxHtml |
+					self renderPaginationBarOn: ajaxHtml ];
 				onComplete: 'componentHandler.upgradeDom();' ]
 ]
 
