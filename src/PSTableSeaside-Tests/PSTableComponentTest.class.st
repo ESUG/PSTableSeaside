@@ -105,7 +105,7 @@ PSTableComponentTest >> testIsLimitPerPageEqualOrLessToListObjectSize [
 	psTable limitPerPage: 2.
 	self assert: psTable isLimitPerPageEqualOrLessToListObjectSize equals: false.
 	psTable limitPerPage: 5.
-	self assert: psTable isLimitPerPageEqualOrLessToListObjectSize equals: true.
+	self assert: psTable isLimitPerPageEqualOrLessToListObjectSize equals: false.
 ]
 
 { #category : #tests }
@@ -113,7 +113,7 @@ PSTableComponentTest >> testIsMorePagesThanTheLimitOfShowedPages [
 
 	psTable listObject: self orderedCollectionTest.
 	psTable limitPerPage: 2.
-	self assert: psTable isMorePagesThanTheLimitOfShowedPages equals: true.
+	self assert: psTable isMorePagesThanTheLimitOfShowedPages equals: false.
 	psTable limitPageShowed: 2.
 	self assert: psTable isMorePagesThanTheLimitOfShowedPages equals: false.
 ]
@@ -172,7 +172,7 @@ PSTableComponentTest >> testLastPage [
 { #category : #tests }
 PSTableComponentTest >> testLimitPageShowed [
 
-	self assert: psTable limitPageShowed equals: 5.
+	self assert: psTable limitPageShowed equals: 3.
 	psTable limitPageShowed: 6.
 	self assert: psTable limitPageShowed equals: 6.
 ]
@@ -180,7 +180,7 @@ PSTableComponentTest >> testLimitPageShowed [
 { #category : #tests }
 PSTableComponentTest >> testLimitPerPage [
 
-	self assert: psTable limitPerPage equals: 0.
+	self assert: psTable limitPerPage equals: 10.
 	psTable limitPerPage: 3.
 	self assert: psTable limitPerPage equals: 3.
 ]

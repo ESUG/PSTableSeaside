@@ -5,7 +5,7 @@ Description
 I am an example component that use a collection
 "
 Class {
-	#name : #ExampleTable,
+	#name : #ExampleTableBlock,
 	#superclass : #PSTableCollectionComponent,
 	#instVars : [
 		'dictToRenderDownloadButton',
@@ -16,33 +16,33 @@ Class {
 }
 
 { #category : #accessing }
-ExampleTable >> blockToExecute: anObject [
+ExampleTableBlock >> blockToExecute: anObject [
 
 	blockToExecute := anObject
 	
 ]
 
 { #category : #accessing }
-ExampleTable >> dictToRenderDownloadButton: aDictionary [
+ExampleTableBlock >> dictToRenderDownloadButton: aDictionary [
 
 	dictToRenderDownloadButton := aDictionary
 ]
 
 { #category : #initialization }
-ExampleTable >> initialize [
+ExampleTableBlock >> initialize [
 
 	super initialize
 ]
 
 { #category : #accessing }
-ExampleTable >> listToRenderButton: anObject [
+ExampleTableBlock >> listToRenderButton: anObject [
 
 	listToRenderButton := anObject
 	
 ]
 
 { #category : #rendering }
-ExampleTable >> render: html with: anObject [
+ExampleTableBlock >> render: html with: anObject [
 
 	| listContent |
 	listContent := blockToExecute valueWithPossibleArgs: {anObject. html}.
@@ -53,7 +53,7 @@ ExampleTable >> render: html with: anObject [
 ]
 
 { #category : #rendering }
-ExampleTable >> renderButton: html with: anObject [
+ExampleTableBlock >> renderButton: html with: anObject [
 
 	listToRenderButton
 		do: [ :dataButton | 
@@ -70,7 +70,7 @@ ExampleTable >> renderButton: html with: anObject [
 ]
 
 { #category : #rendering }
-ExampleTable >> renderDownloadButton: html with: anObject [
+ExampleTableBlock >> renderDownloadButton: html with: anObject [
 
 	dictToRenderDownloadButton ifNotEmpty: [ 
 		| downloadButton |
@@ -83,4 +83,14 @@ ExampleTable >> renderDownloadButton: html with: anObject [
 		html div	class: 'mdl-tooltip'; 
 				attributeAt: 'data-mdl-for' put: ((dictToRenderDownloadButton at: 'id') value: anObject) ;
 				with: 'Download invoice'].
+]
+
+{ #category : #'rendering-searching' }
+ExampleTableBlock >> validateFilterOf: anObject [
+
+	| objectsMatch objectContainer |
+	objectContainer := anObject copy.
+	objectsMatch := objectContainer 
+		select: [ :elem | (elem asString) includesSubstring: self searchingText caseSensitive: false ].
+	^ (objectsMatch isNotEmpty)
 ]

@@ -57,3 +57,9 @@ PSTableCollectionComponent >> rowAtIndex: anIndex [
 
 	^ self filteredListObject at: anIndex
 ]
+
+{ #category : #'rendering-searching' }
+PSTableCollectionComponent >> validateFilterOf: anObject [
+	
+	self subclassResponsibility.
+]
