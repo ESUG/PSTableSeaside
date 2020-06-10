@@ -16,15 +16,16 @@ Class {
 	#instVars : [
 		'limitPerPage',
 		'currentPage',
-		'listObject',
 		'disablePagination',
+		'disableLimitPerPage',
+		'disableSearching',
 		'headers',
 		'tableId',
+		'searchingText',
+		'listObject',
 		'renderBlock',
 		'limitPageShowed',
-		'searchingText',
-		'filteredListObject',
-		'disableSearching'
+		'filteredListObject'
 	],
 	#category : #'PSTableSeaside-Components'
 }
@@ -34,6 +35,19 @@ PSTableComponent >> addObjectOfIndex: anIndex to: aList [
 	"Add object of a given index in a list to render in your page"
 
 	self subclassResponsibility
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> assingNewLimitPerPageWith: newLimit [
+	self limitPerPage: newLimit.
+	^ self firstPage
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> changeLimitRowsOn: html [
+
+	^ html jQuery ajax serializeThis
+		onComplete: (self updateContentTableOn: html)
 ]
 
 { #category : #accessing }
@@ -48,6 +62,20 @@ PSTableComponent >> currentPage: aNumber [
 	"Current page of pagination"
 
 	currentPage := aNumber
+]
+
+{ #category : #accessing }
+PSTableComponent >> disableLimitPerPage [
+	"Option to disable limit of rows per page. The defect value is false"
+
+	^ disableLimitPerPage
+]
+
+{ #category : #accessing }
+PSTableComponent >> disableLimitPerPage: aBoolean [
+	"Option to disable limit of rows per page. The defect value is false"
+
+	disableLimitPerPage := aBoolean
 ]
 
 { #category : #accessing }
@@ -78,6 +106,15 @@ PSTableComponent >> disableSearching: aBoolean [
 
 { #category : #'ajax-events' }
 PSTableComponent >> executeCallback: aCallback on: html [
+
+	^ html jQuery ajax
+		callback: aCallback;
+		context: 'this' js;
+		onSuccess: (self updateContentTableOn: html)
+]
+
+{ #category : #'ajax-events' }
+PSTableComponent >> executePaginationCallback: aCallback on: html [
 
 	^ html jQuery ajax
 		callback: aCallback;
@@ -130,6 +167,11 @@ PSTableComponent >> firstPageShowed [
 ]
 
 { #category : #validation }
+PSTableComponent >> hasMoreRowsThanLimit [
+	^ filteredListObject size > limitPerPage
+]
+
+{ #category : #validation }
 PSTableComponent >> haveAnyRowFiltered [
 	"Return true if there are any row in a filtered result"
 
@@ -153,13 +195,14 @@ PSTableComponent >> headers: aCollection [
 { #category : #initialization }
 PSTableComponent >> initialize [
 
-	limitPerPage := 1.
+	limitPerPage := 10.
 	headers := OrderedCollection new.
 	currentPage := 1.
 	disablePagination := false.
 	disableSearching := false.
-	limitPageShowed := 5.
-	searchingText := ''
+	disableLimitPerPage := false.
+	limitPageShowed := 3.
+	searchingText := ''.
 ]
 
 { #category : #initialization }
@@ -172,7 +215,7 @@ PSTableComponent >> initializeList [
 PSTableComponent >> isLimitPerPageEqualOrLessToListObjectSize [
 	"Return true if the limit per page is the same as the list object size"
 
-	^ (self limitPerPage >= self filteredListObject size)
+	^ (self limitPerPage > self filteredListObject size)
 ]
 
 { #category : #validation }
@@ -220,6 +263,11 @@ PSTableComponent >> limitOfShowedPages [
 	(self isTheCurrentPageEqualOrGreaterThanLastPageGroup)
 		ifFalse: [ ^ self numberOfPages ]
 		ifTrue: [ ^ self currentPage + self limitPageShowed ]
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> limitOptions [
+	^ #(10 25 50 100)
 ]
 
 { #category : #accessing }
@@ -291,9 +339,29 @@ PSTableComponent >> numberOfPages [
 	^ (self filteredListObject size / self limitPerPage) roundUpTo: 1
 ]
 
+{ #category : #'rendering-pagination' }
+PSTableComponent >> pageBarId [
+	^ 'page-bar-options'
+]
+
 { #category : #actions }
 PSTableComponent >> pageOf: aPage [
 	^ currentPage := aPage
+]
+
+{ #category : #'rendering-pagination' }
+PSTableComponent >> paginationBarStyles [
+	^ 'display: flex; justify-content: space-evenly; padding: 10px 0px;'
+]
+
+{ #category : #'rendering-pagination' }
+PSTableComponent >> paginationSectionBottomId [
+	^ self tableId asString , '-page-bar-bottom'
+]
+
+{ #category : #'rendering-pagination' }
+PSTableComponent >> paginationSectionTopId [
+	^ self tableId asString , '-page-bar-top'
 ]
 
 { #category : #actions }
@@ -318,7 +386,7 @@ PSTableComponent >> render: html with: anObject [
 	self subclassResponsibility
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderButtonFirstPageOn: html [
 	"Render the button to go to the first page of table"
 
@@ -331,11 +399,11 @@ PSTableComponent >> renderButtonFirstPageOn: html [
 				id: 'firstPageButtonPagination';
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self firstPage ] on: html);
+				onClick: (self executePaginationCallback: [ self firstPage ] on: html);
 				with: 'first' ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderButtonLastPageOn: html [
 	"Render the button to go to the last page of table"
 
@@ -348,11 +416,11 @@ PSTableComponent >> renderButtonLastPageOn: html [
 				id: 'lastButtonPagination';
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self lastPage ] on: html);
+				onClick: (self executePaginationCallback: [ self lastPage ] on: html);
 				with: 'last' ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderButtonNextPageOn: html [
 	"Render the button to go to next page of table"
 
@@ -366,11 +434,11 @@ PSTableComponent >> renderButtonNextPageOn: html [
 				raised;
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self nextPage ] on: html);
+				onClick: (self executePaginationCallback: [ self nextPage ] on: html);
 				with: 'next' ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderButtonOfPage: aPage on: html [
 	"Render the button to go to given page of table"
 
@@ -382,11 +450,11 @@ PSTableComponent >> renderButtonOfPage: aPage on: html [
 		ifFalse: [ html mdlButton
 				raised;
 				id: 'buttonPagination' , aPage printString;
-				onClick: (self executeCallback: [ self pageOf: aPage ] on: html);
+				onClick: (self executePaginationCallback: [ self pageOf: aPage ] on: html);
 				with: aPage printString ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderButtonPreviousPageOn: html [
 	"Render the button to go to previous page of table"
 
@@ -400,7 +468,7 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 				raised;
 				primaryColor;
 				rippleEffect;
-				onClick: (self executeCallback: [ self previousPage ] on: html);
+				onClick: (self executePaginationCallback: [ self previousPage ] on: html);
 				with: 'prev' ]
 ]
 
@@ -408,15 +476,16 @@ PSTableComponent >> renderButtonPreviousPageOn: html [
 PSTableComponent >> renderContentOn: html [
 	"Render the table with the pagination option bar on html"
 
-		(self disableSearching)
-			ifFalse: [ self renderSearchingBarOn: html ].
-		html div
-			style: 'overflow-x: auto;';
-			with: [
-				self renderTableSectionOn: html ]
+	disablePagination
+		ifFalse: [ self renderPaginationSectionTopOn: html ].
+	(self disableLimitPerPage and: [ self disablePagination ])
+		ifFalse: [ self renderSearchingBarSectionOn: html ].
+	self renderTableSectionOn: html.
+	disablePagination
+		ifFalse: [ self renderPaginationSectionBottomOn: html ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderDisabledButtonWithId: aButtonId andText: aString on: html [
 	"Render a disabled button with a given id and text on html"
 	
@@ -427,7 +496,30 @@ PSTableComponent >> renderDisabledButtonWithId: aButtonId andText: aString on: h
 		with: aString
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> renderLabelRowsOn: html [
+
+	html div
+		style: self selectBoxLabelStyles;
+		with: [ html label: 'Rows per page: ' ]
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> renderLimitRowsSelectBoxOn: html [
+	html
+		render:
+			(MDLSelectWidget new
+				labelBlock: #asString;
+				possibilities: self limitOptions;
+				callback: [ :newLimit | self assingNewLimitPerPageWith: newLimit ];
+				selectedObject: limitPerPage;
+				sortBlock: [ :a :b | a asInteger <= b asInteger ];
+				customizationBlock:
+						[ :textField | textField onChange: (self changeLimitRowsOn: html) ];
+				yourself)
+]
+
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderNextButtonsOn: html [
 	"Render next button options of table pagination bar"
 
@@ -446,7 +538,7 @@ PSTableComponent >> renderNoResultRowOn: html [
 				with: 'No matching results found' ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderPageButtonsOn: html [
 	"Render page button options of table pagination bar"
 
@@ -455,7 +547,7 @@ PSTableComponent >> renderPageButtonsOn: html [
 		with: [ self renderPageSelectionButtonsOn: html ]
 ]
 
-{ #category : #'rendering-pagination' }
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderPageSelectionButtonsOn: html [
 	"Render page options in pagination bar"
 
@@ -479,19 +571,33 @@ PSTableComponent >> renderPaginatedTableOn: html [
 PSTableComponent >> renderPaginationBarOn: html [
 	"Render pagination bar on html"
 
-	(self disablePagination
-		or: [ self isLimitPerPageEqualOrLessToListObjectSize ])
-		ifFalse: [ html div
-				id: 'page-bar-options';
-				style: 'display: flex; justify-content: space-evenly; padding: 10px 0px;';
-				with: [ 
-					self renderPreviousButtonsOn: html.
+	self hasMoreRowsThanLimit
+		ifTrue: [ html div
+				id: self pageBarId;
+				style: self paginationBarStyles;
+				with: [ self renderPreviousButtonsOn: html.
 					self renderPageButtonsOn: html.
 					self renderNextButtonsOn: html ] ]
-		ifTrue: [ ^ nil ]
 ]
 
 { #category : #'rendering-pagination' }
+PSTableComponent >> renderPaginationSectionBottomOn: html [
+
+	html div
+		id: self paginationSectionBottomId;
+		with: [ self renderPaginationBarOn: html ]	
+
+]
+
+{ #category : #'rendering-pagination' }
+PSTableComponent >> renderPaginationSectionTopOn: html [
+
+	html div
+		id: self paginationSectionTopId;
+		with: [ self renderPaginationBarOn: html ]
+]
+
+{ #category : #'rendering-pagination-buttons' }
 PSTableComponent >> renderPreviousButtonsOn: html [
 	"Render previous button option of table pagination bar"
 
@@ -514,24 +620,50 @@ PSTableComponent >> renderRowsOn: html [
 ]
 
 { #category : #'rendering-searching' }
-PSTableComponent >> renderSearchingBarOn: html [
+PSTableComponent >> renderSearchingBarSectionOn: html [
 
 	html div
-		id: self tableId asString, '-searching-bar';
-		style: 'border: 1px solid rgba(0,0,0,.12); padding: 0px 10px';
-		with: [
-			html mdlTextFieldContainer 
-			floatingLabel;
-			style: 'width: 200px; margin 0px 10px';
-				with: [ 
-				html mdlTextFieldLabel
-					for: self tableId asString, '-searchInputTable';
-					with: 'Search'.
-				html mdlTextFieldInput
-					value: self searchingText;
-					onInput: (self filterRowsOn: html);
-					noAutocomplete;
-					id: self tableId asString, '-searchInputTable' ] ]
+		id: self searchingBarSectionId;
+		style: self searchingBarSectionStyle;
+		with: [ 
+			self disableSearching
+				ifFalse: [ self renderSearchingInputOn: html ].
+			self disableLimitPerPage
+				ifFalse: [ self renderSelectBoxSectionOn: html ] ]
+]
+
+{ #category : #'rendering-searching' }
+PSTableComponent >> renderSearchingInputOn: html [
+	html div
+		with: [ html mdlTextFieldContainer
+				floatingLabel;
+				style: 'width: 200px; margin 0px 10px';
+				with: [ html mdlTextFieldLabel
+						for: self tableId asString , '-searchInputTable';
+						with: 'Search'.
+					html mdlTextFieldInput
+						value: self searchingText;
+						onInput: (self filterRowsOn: html);
+						noAutocomplete;
+						id: self tableId asString , '-searchInputTable' ] ]
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> renderSelectBoxOn: html [
+	
+	html div
+		style: self selectBoxStyles;
+		with: [ self renderLimitRowsSelectBoxOn: html ]
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> renderSelectBoxSectionOn: html [
+
+	html div
+		style: 'display: flex';
+		with: [ 
+			self renderLabelRowsOn: html.
+			self renderSelectBoxOn: html ]
 ]
 
 { #category : #'rendering-table' }
@@ -539,7 +671,8 @@ PSTableComponent >> renderTableBodyOn: html [
 	"Render table Body on html"
 
 	html tableBody
-		id: self tableId asString , '-body';
+		id: self tableBodyId;
+		style: 'overflow-x: auto;';
 		with: [ self renderRowsOn: html ]
 ]
 
@@ -551,17 +684,26 @@ PSTableComponent >> renderTableHeadersOn: html [
 		id: 'pstable-head';
 		with: [
 			html tableRow: [
-				self headers do: [ :each |
-					html mdlTableHeading nonNumerical; with: each ] ] ]
+				self headers doWithIndex: [ :each :index |
+					html mdlTableHeading 
+						nonNumerical;
+						with: [
+							html text: each ] ] ] ]
+]
+
+{ #category : #'rendering-table' }
+PSTableComponent >> renderTableOn: html [
+	html div
+		id: tableId;
+		with: [
+			self renderPaginatedTableOn: html ]
 ]
 
 { #category : #'rendering-table' }
 PSTableComponent >> renderTableSectionOn: html [
 	html div
-		id: tableId;
-		with: [ 
-			self renderPaginatedTableOn: html.
-			self renderPaginationBarOn: html ]
+		style: 'overflow-x: auto;';
+		with: [ self renderTableOn: html ]
 ]
 
 { #category : #accessing }
@@ -580,6 +722,18 @@ PSTableComponent >> rowsOfPage [
 		ifFalse: [ ^ self listObjectOfPage ]
 ]
 
+{ #category : #'rendering-searching' }
+PSTableComponent >> searchingBarSectionId [
+	^ self tableId asString , '-searching-bar'
+]
+
+{ #category : #'rendering-searching' }
+PSTableComponent >> searchingBarSectionStyle [
+	^ 'border: 1px solid rgba(0,0,0,.12); 
+		padding: 0px 10px; display: flex;
+    	justify-content: space-between;'
+]
+
 { #category : #accessing }
 PSTableComponent >> searchingText [
 
@@ -590,6 +744,21 @@ PSTableComponent >> searchingText [
 PSTableComponent >> searchingText: aString [
 
 	searchingText := aString
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> selectBoxLabelStyles [
+	^ 'align-self: center; margin: 0px 20px'
+]
+
+{ #category : #'rendering-limitRows' }
+PSTableComponent >> selectBoxStyles [
+	^ 'width: 60px;'
+]
+
+{ #category : #'rendering-table' }
+PSTableComponent >> tableBodyId [
+	^ self tableId asString , '-body'
 ]
 
 { #category : #accessing }
@@ -611,17 +780,35 @@ PSTableComponent >> updateContentTableOn: html [
 
 	^ html jQuery
 		script: [ :s | 
-			(s << (html jQuery id: self tableId asString) load)
-				html: [ :ajaxHtml | self renderTableSectionOn: ajaxHtml ];
-				onComplete: 'componentHandler.upgradeDom();' ]
+			self updateTableScript: s on: html.
+			self updatePaginationBarTopScript: s on: html.
+			self updatePaginationBarBottomScript: s on: html ]
+]
+
+{ #category : #'ajax-events' }
+PSTableComponent >> updatePaginationBarBottomScript: s on: html [
+	^ (s
+		<< (html jQuery id: self paginationSectionBottomId) load)
+		html: [ :ajaxHtml | self renderPaginationBarOn: ajaxHtml ];
+		onComplete: 'componentHandler.upgradeDom();'
+]
+
+{ #category : #'ajax-events' }
+PSTableComponent >> updatePaginationBarTopScript: s on: html [
+	(s << (html jQuery id: self paginationSectionTopId) load)
+		html: [ :ajaxHtml | self renderPaginationBarOn: ajaxHtml ];
+		onComplete: 'componentHandler.upgradeDom();'
+]
+
+{ #category : #'ajax-events' }
+PSTableComponent >> updateTableScript: s on: html [
+	(s << (html jQuery id: self tableId asString) load)
+		html: [ :ajaxHtml | self renderTableOn: ajaxHtml ];
+		onComplete: 'componentHandler.upgradeDom();'
 ]
 
 { #category : #'rendering-searching' }
-PSTableComponent >> validateFilterOf: aObject [
+PSTableComponent >> validateFilterOf: anObject [
 	
-	| objectsMatch objectContainer |
-	objectContainer := aObject copy.
-	objectsMatch := objectContainer 
-		select: [ :elem | elem includesSubstring: self searchingText caseSensitive: false ].
-	^ (objectsMatch isNotEmpty)
+	self subclassResponsibility.
 ]

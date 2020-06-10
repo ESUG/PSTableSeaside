@@ -44,6 +44,7 @@ PSTableDictionaryComponent >> keyAtIndex: anIndex [
 
 { #category : #rendering }
 PSTableDictionaryComponent >> render: html with: anObject [
+	"Render object on html"
 
 	self subclassResponsibility
 ]
@@ -55,7 +56,8 @@ PSTableDictionaryComponent >> renderRowsOfPageOn: html [
 	(self rowsOfPage)
 		keysAndValuesDo: [ :keyObject :object | 
 			html
-				tableRow: [ html mdlTableCell
+				tableRow: [ 
+					html mdlTableCell
 						nonNumerical;
 						with: keyObject.
 					self render: html with: object ] ]
@@ -66,4 +68,10 @@ PSTableDictionaryComponent >> rowAtIndex: anIndex [
 	"Return the row at given index"
 
 	^ self filteredListObject at: (self keyAtIndex: anIndex)
+]
+
+{ #category : #'rendering-searching' }
+PSTableDictionaryComponent >> validateFilterOf: anObject [
+	
+	self subclassResponsibility
 ]
