@@ -44,7 +44,7 @@ PSSortedTableCollectionComponent >> render: html with: anObject [
 PSSortedTableCollectionComponent >> renderRowsOfPageOn: html [
 	"Render rows of a page on html"
 	
-	(self rowsOfPage)
+	(self rowsByPage)
 			do: [ :object |
 						html tableRow: [ self render: html with: object ] ]
 ]
