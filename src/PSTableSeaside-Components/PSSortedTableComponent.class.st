@@ -632,6 +632,7 @@ PSSortedTableComponent >> renderTableSectionOn: html [
 
 	html div
 		id: self tableId;
+		style: 'overflow-x: auto;';
 		with: [ self renderTableOn: html ]
 ]
 
