@@ -15,7 +15,9 @@ Class {
 		'tableFive',
 		'listContactOne',
 		'listContactTwo',
-		'listContactLittleOne'
+		'listContactLittleOne',
+		'tableSix',
+		'tableSeven'
 	],
 	#category : #'PSTableSeaside-Demo'
 }
@@ -56,13 +58,13 @@ PSTableDemoApp >> deleteContact: aContact ofList: aList [
 { #category : #accessing }
 PSTableDemoApp >> headerWithOptions [
 
-	^ #('Id' 'Full Name' 'Email' 'Genre' '')
+	^ { 'Id' . 'Full Name' . 'Email' . 'Genre' . PSTableSortableHeaderOptions new cell: '' }
 ]
 
 { #category : #accessing }
 PSTableDemoApp >> headers [
 
-	^ #('Id' 'Full Name' 'Email' 'Genre')
+	^ { 'Id' . 'Full Name' . 'Email' . 'Genre' }
 ]
 
 { #category : #initialization }
@@ -72,70 +74,88 @@ PSTableDemoApp >> initialize [
 	self initializeTableTwo.
 	self initializeTableThree.
 	self initializeTableFour.
-	self initializeTableFive
+	self initializeTableFive.
+	self initializeTableSix.
+	self initializeTableSeven
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeCollection [
 	listContactOne := self orderedCollectionContact.
 	listContactLittleOne := self orderedCollectionContactLittle.
-	listContactTwo := self orderedCollectionContact
+	listContactTwo := self orderedDictionaryContact
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeTableFive [
-	"Initialize a table disabling all options"
 
 	tableFive := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
+		header: self headers;
+		rows: listContactOne;
 		tableId: 'table-pagination-5';
-		disableLimitPerPage: true;
-		disableSearching: true;
-		disablePagination: true
+		showSelectionLimit: false
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeTableFour [
-	"Initialize a table disabling selection of limit per page"
 
 	tableFour := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
+		header: self headers;
+		rows: listContactOne;
 		tableId: 'table-pagination-4';
-		disableLimitPerPage: true
+		showPaginationBar: false
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeTableOne [
-	"Initialize a table with general configuration"
 
-	tableOne := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
-		tableId: 'table-pagination-1'
+	tableOne := ExampleTableBlock new
+						header: self headerWithOptions;
+						rows: listContactOne;
+						tableId: 'table-pagination-1';
+						blockToExecute: self blockTableToExecute;
+						listToRenderButton: self listDataToRenderButtonOne;
+						dictToRenderDownloadButton: Dictionary new.
+]
+
+{ #category : #initialization }
+PSTableDemoApp >> initializeTableSeven [
+
+	tableSeven := ExampleTableCollection new
+		header: self headers;
+		rows: listContactOne;
+		tableId: 'table-pagination-7';
+		showSearchingField: false;
+		showPaginationBar: false;
+		showSelectionLimit: false
+]
+
+{ #category : #initialization }
+PSTableDemoApp >> initializeTableSix [
+
+	tableSix := ExampleTableCollection new
+		header: self headers;
+		rows: listContactOne;
+		tableId: 'table-pagination-6';
+		showSearchingField: false
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeTableThree [
-	"Initialize a table disabling searching option"
 
-	tableThree := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
-		tableId: 'table-pagination-3';
-		disableSearching: true
+	tableThree := ExampleTableDictionary new
+						header: self headers;
+						rows: listContactTwo;
+						tableId: 'table-pagination-3'
 ]
 
 { #category : #initialization }
 PSTableDemoApp >> initializeTableTwo [
-	"Initialize a table disabling the pagination bar"
 
 	tableTwo := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
-		tableId: 'table-pagination-2';
-		disablePagination: true
+						header: self headers;
+						rows: listContactOne;
+						tableId: 'table-pagination-2'
 ]
 
 { #category : #accessing }
@@ -145,10 +165,10 @@ PSTableDemoApp >> listDataToRenderButtonOne [
 		add:
 			(Array
 				with: 'delete'
-				with: [ :contact | self deleteContact: contact ofList: listContactOne ]
+				with: [ :contact | "Functionality not implemented" ]
 				with: [ :contact | (contact at: 1) asString , '-delete' ]
 				with: 'Delete user'
-				with: 'return confirm(''Are you sure you want to delete this contact?'');'
+				with: 'return alert(''User deleted!'');'
 				with: false);
 			yourself
 ]
@@ -329,7 +349,9 @@ PSTableDemoApp >> renderContentOn: html [
 			self renderTableTwoOn: html.
 			self renderTableThreeOn: html.
 			self renderTableFourOn: html.
-			self renderTableFiveOn: html ]
+			self renderTableFiveOn: html.
+			self renderTableSixOn: html.
+			self renderTableSevenOn: html ]
 ]
 
 { #category : #rendering }
@@ -343,35 +365,49 @@ PSTableDemoApp >> renderHeadingOn: html withMessage: aString [
 { #category : #rendering }
 PSTableDemoApp >> renderTableFiveOn: html [
 
-	self renderHeadingOn: html withMessage: 'Table Five: Render a table disabling all options'.
+	self renderHeadingOn: html withMessage: 'Table Five: Render a table disabling select of limit'.
 	html render: tableFive
 ]
 
 { #category : #rendering }
 PSTableDemoApp >> renderTableFourOn: html [
 
-	self renderHeadingOn: html withMessage: 'Table Four: Render a table disabling the limit per page selection'.
+	self renderHeadingOn: html withMessage: 'Table Four: Render a table disabling pagination bar'.
 	html render: tableFour
 ]
 
 { #category : #rendering }
 PSTableDemoApp >> renderTableOneOn: html [
 
-	self renderHeadingOn: html withMessage: 'Table One: Render a table with all options'.
+	self renderHeadingOn: html withMessage: 'Table One: Render a table with buttons'.
 	html render: tableOne
+]
+
+{ #category : #rendering }
+PSTableDemoApp >> renderTableSevenOn: html [
+
+	self renderHeadingOn: html withMessage: 'Table Seven: Render a table disabling all options'.
+	html render: tableSeven
+]
+
+{ #category : #rendering }
+PSTableDemoApp >> renderTableSixOn: html [
+
+	self renderHeadingOn: html withMessage: 'Table Six: Render a table disabling search input'.
+	html render: tableSix
 ]
 
 { #category : #rendering }
 PSTableDemoApp >> renderTableThreeOn: html [
 
-	self renderHeadingOn: html withMessage: 'Table Three: Render a table disabling the searching option'.
+	self renderHeadingOn: html withMessage: 'Table Three: Render a table with a dictionary information'.
 	html render: tableThree
 ]
 
 { #category : #rendering }
 PSTableDemoApp >> renderTableTwoOn: html [
 
-	self renderHeadingOn: html withMessage: 'Table Two: Render a table disabling the paging option'.
+	self renderHeadingOn: html withMessage: 'Table Two: Render a table without buttons'.
 	html render: tableTwo
 ]
 

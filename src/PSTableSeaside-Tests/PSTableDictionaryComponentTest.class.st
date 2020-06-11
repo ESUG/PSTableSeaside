@@ -8,7 +8,7 @@ Class {
 PSTableDictionaryComponentTest >> setUp [
 
 	super setUp.
-	psTable := PSTableDictionaryComponent new
+	"psTable := PSTableDictionaryComponent new"
 ]
 
 { #category : #tests }
