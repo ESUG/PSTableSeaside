@@ -56,13 +56,13 @@ PSTableDemoApp >> deleteContact: aContact ofList: aList [
 { #category : #accessing }
 PSTableDemoApp >> headerWithOptions [
 
-	^ #('Id' 'Full Name' 'Email' 'Genre' '')
+	^ { 'Id' . 'Full Name' . 'Email' . 'Genre' . PSTableSortableHeaderOptions new cell: '' }
 ]
 
 { #category : #accessing }
 PSTableDemoApp >> headers [
 
-	^ #('Id' 'Full Name' 'Email' 'Genre')
+	^ { 'Id' . 'Full Name' . 'Email' . 'Genre' }
 ]
 
 { #category : #initialization }
@@ -70,9 +70,9 @@ PSTableDemoApp >> initialize [
 	self initializeCollection.
 	self initializeTableOne.
 	self initializeTableTwo.
-	self initializeTableThree.
+	"self initializeTableThree.
 	self initializeTableFour.
-	self initializeTableFive
+	self initializeTableFive"
 ]
 
 { #category : #initialization }
@@ -110,10 +110,13 @@ PSTableDemoApp >> initializeTableFour [
 PSTableDemoApp >> initializeTableOne [
 	"Initialize a table with general configuration"
 
-	tableOne := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
-		tableId: 'table-pagination-1'
+	tableOne := ExampleTableBlock new
+						header: self headerWithOptions;
+						rows: listContactOne;
+						tableId: 'table-pagination-1';
+						blockToExecute: self blockTableToExecute;
+						listToRenderButton: self listDataToRenderButtonOne;
+						dictToRenderDownloadButton: Dictionary new.
 ]
 
 { #category : #initialization }
@@ -132,10 +135,9 @@ PSTableDemoApp >> initializeTableTwo [
 	"Initialize a table disabling the pagination bar"
 
 	tableTwo := ExampleTableCollection new
-		headers: self headers;
-		listObject: listContactOne;
-		tableId: 'table-pagination-2';
-		disablePagination: true
+						header: self headers;
+						rows: listContactOne;
+						tableId: 'table-pagination-2'
 ]
 
 { #category : #accessing }
@@ -145,10 +147,10 @@ PSTableDemoApp >> listDataToRenderButtonOne [
 		add:
 			(Array
 				with: 'delete'
-				with: [ :contact | self deleteContact: contact ofList: listContactOne ]
+				with: [ :contact | "Functionality not implemented" ]
 				with: [ :contact | (contact at: 1) asString , '-delete' ]
 				with: 'Delete user'
-				with: 'return confirm(''Are you sure you want to delete this contact?'');'
+				with: 'return alert(''User deleted!'');'
 				with: false);
 			yourself
 ]
@@ -327,9 +329,9 @@ PSTableDemoApp >> renderContentOn: html [
 		with: [
 			self renderTableOneOn: html.
 			self renderTableTwoOn: html.
-			self renderTableThreeOn: html.
+			"self renderTableThreeOn: html.
 			self renderTableFourOn: html.
-			self renderTableFiveOn: html ]
+			self renderTableFiveOn: html" ]
 ]
 
 { #category : #rendering }

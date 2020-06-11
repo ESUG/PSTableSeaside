@@ -6,7 +6,7 @@ I am an example component that use a collection
 "
 Class {
 	#name : #ExampleTableBlock,
-	#superclass : #PSTableCollectionComponent,
+	#superclass : #PSSortedTableCollectionComponent,
 	#instVars : [
 		'dictToRenderDownloadButton',
 		'blockToExecute',
@@ -45,6 +45,7 @@ ExampleTableBlock >> listToRenderButton: anObject [
 ExampleTableBlock >> render: html with: anObject [
 
 	| listContent |
+
 	listContent := blockToExecute valueWithPossibleArgs: {anObject. html}.
 	listContent do: [ :content |
 		html mdlTableCell nonNumerical; with: content.

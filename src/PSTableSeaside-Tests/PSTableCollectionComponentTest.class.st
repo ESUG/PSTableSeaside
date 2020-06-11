@@ -8,7 +8,7 @@ Class {
 PSTableCollectionComponentTest >> setUp [
 
 	super setUp.
-	psTable := PSTableCollectionComponent new
+	"psTable := PSTableCollectionComponent new"
 ]
 
 { #category : #tests }

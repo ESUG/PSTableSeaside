@@ -3,7 +3,7 @@ I am a example of a table with a dictionary as rows
 "
 Class {
 	#name : #ExampleTableDictionary,
-	#superclass : #PSTableDictionaryComponent,
+	#superclass : #WAComponent,
 	#category : #'PSTableSeaside-Demo'
 }
 

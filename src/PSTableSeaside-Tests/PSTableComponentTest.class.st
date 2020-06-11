@@ -35,7 +35,7 @@ PSTableComponentTest >> orderedDictionaryTest [
 PSTableComponentTest >> setUp [
 
 	super setUp.
-	psTable := PSTableComponent new
+	"psTable := PSTableComponent new"
 ]
 
 { #category : #running }

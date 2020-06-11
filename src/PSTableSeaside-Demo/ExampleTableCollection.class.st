@@ -6,7 +6,7 @@ I am a second example table without blocks to execute
 "
 Class {
 	#name : #ExampleTableCollection,
-	#superclass : #PSTableCollectionComponent,
+	#superclass : #PSSortedTableCollectionComponent,
 	#category : #'PSTableSeaside-Demo'
 }
 
