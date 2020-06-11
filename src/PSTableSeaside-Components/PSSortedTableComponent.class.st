@@ -172,6 +172,7 @@ PSSortedTableComponent >> initialize [
 	self rowsPerPagePossibilities: #(10 25 50 100).
 	showSelectionLimit := true.
 	showSearchingField := true.
+	showPaginationBar := true.
 	position := 1.
 	searchingText := ''.
 	tableId := ''.
@@ -182,6 +183,11 @@ PSSortedTableComponent >> initialize [
 PSSortedTableComponent >> initializeList [
 
 	self subclassResponsibility
+]
+
+{ #category : #'rendering-table' }
+PSSortedTableComponent >> isAHeaderOption: head [
+	^ head isKindOf: PSTableSortableHeaderOptions
 ]
 
 { #category : #validation }
@@ -345,6 +351,14 @@ PSSortedTableComponent >> renderBackButtonOn: html [
 ]
 
 { #category : #'rendering-pagination' }
+PSSortedTableComponent >> renderBackButtonsOn: html [
+	html div
+		id: 'back-section';
+		with: [ self renderFirstButtonOn: html.
+			self renderBackButtonOn: html ]
+]
+
+{ #category : #'rendering-pagination' }
 PSSortedTableComponent >> renderButtonOfPage: aPage on: html [
 	(self isSelectedPage: aPage)
 		ifTrue: [ html mdlButton
@@ -365,10 +379,13 @@ PSSortedTableComponent >> renderButtonOfPage: aPage on: html [
 { #category : #rendering }
 PSSortedTableComponent >> renderContentOn: html [
 
-	self renderPaginationBarTopSectionOn: html.
-	self renderOptionBarSectionOn: html.
+	showPaginationBar
+		ifTrue: [ self renderPaginationBarTopSectionOn: html ].
+	(showSelectionLimit or: [ showSearchingField ])
+		ifTrue: [ self renderOptionBarSectionOn: html ].
 	self renderTableSectionOn: html.
-	self renderPaginationBarBottomSectionOn: html.
+	showPaginationBar
+		ifTrue: [ self renderPaginationBarBottomSectionOn: html ]
 ]
 
 { #category : #'rendering-pagination' }
@@ -457,6 +474,14 @@ PSSortedTableComponent >> renderNextButtonOn: html [
 		with: 'next' ]
 ]
 
+{ #category : #'rendering-pagination' }
+PSSortedTableComponent >> renderNextButtonsOn: html [
+	html div
+		id: 'next-section';
+		with: [ self renderNextButtonOn: html.
+			self renderLastButtonOn: html ]
+]
+
 { #category : #'rendering-optionBar' }
 PSSortedTableComponent >> renderOptionBarSectionOn: html [
 
@@ -464,7 +489,7 @@ PSSortedTableComponent >> renderOptionBarSectionOn: html [
 		id: self optionBarSectionId;
 		style: self optionBarSectionStyle;
 		with: [ 
-			showSelectionLimit
+			(showSelectionLimit and: [ showPaginationBar ])
 				ifTrue: [ self renderSelectBoxSectionOn: html ].
 			showSearchingField
 				ifTrue: [ self renderSearchingInputOn: html ]. ]
@@ -478,7 +503,7 @@ PSSortedTableComponent >> renderPageButtonsOn: html [
 
 { #category : #'rendering-pagination' }
 PSSortedTableComponent >> renderPaginationBarBottomSectionOn: html [
-
+	
 	html div
 		id: self tableId asString, '-pagination-bar-bottom';
 		style: 'display: flex; justify-content: space-evenly; padding: 10px 0px;';
@@ -487,21 +512,11 @@ PSSortedTableComponent >> renderPaginationBarBottomSectionOn: html [
 
 { #category : #'rendering-pagination' }
 PSSortedTableComponent >> renderPaginationBarOn: html [
-
-	html div
-		style: 'back-section';
-		with: [
-		self renderFirstButtonOn: html.
-		self renderBackButtonOn: html ].
-	html div
-		style: 'page-button-section';
-		with: [
-		self renderPageButtonsOn: html ].
-	html div
-		style: 'next-section';
-		with: [
-		self renderNextButtonOn: html.
-		self renderLastButtonOn: html ]
+	self filteredRows size > elementsToShow
+		ifFalse: [ ^ self ].
+	self renderBackButtonsOn: html.
+	self renderPaginationButtonsOn: html.
+	self renderNextButtonsOn: html
 ]
 
 { #category : #'rendering-pagination' }
@@ -511,6 +526,13 @@ PSSortedTableComponent >> renderPaginationBarTopSectionOn: html [
 		id: self tableId asString, '-pagination-bar-top';
 		style: 'display: flex; justify-content: space-evenly; padding: 10px 0px;';
 		with: [ self renderPaginationBarOn: html ]
+]
+
+{ #category : #'rendering-pagination' }
+PSSortedTableComponent >> renderPaginationButtonsOn: html [
+	html div
+		id: 'page-button-section';
+		with: [ self renderPageButtonsOn: html ]
 ]
 
 { #category : #'rendering-table' }
@@ -563,12 +585,13 @@ PSSortedTableComponent >> renderSelectBoxSectionOn: html [
 
 { #category : #'rendering-table' }
 PSSortedTableComponent >> renderTableHeaderOn: html [
-
 	html
-		tableHead: [ html tableRow: [ header doWithIndex: [ :head :i | 
-					(head isKindOf: PSTableSortableHeaderOptions)
-						ifTrue: [ head renderContentOn: html ]
-						ifFalse: [ head renderContentOn: html forTable: self columnIndex: i ] ] ] ]
+		tableHead: [ html
+				tableRow: [ header
+						doWithIndex: [ :head :i | 
+							(self isAHeaderOption: head)
+								ifTrue: [ head renderContentOn: html ]
+								ifFalse: [ head renderContentOn: html forTable: self columnIndex: i ] ] ] ]
 ]
 
 { #category : #'rendering-table' }
@@ -611,6 +634,7 @@ PSSortedTableComponent >> rowsByPage [
 
 	| listOfPage index |
 	listOfPage := self initializeList.
+	showPaginationBar ifFalse: [ ^ self filteredRows copy ].
 	index := (position - 1) * elementsToShow.
 	index := index + 1.
 	[ listOfPage size < elementsToShow and: [ index <= self filteredRows size ] ]
@@ -618,13 +642,6 @@ PSSortedTableComponent >> rowsByPage [
 			self addObjectOfIndex: index to: listOfPage.
 			index := index + 1 ].
 	^ listOfPage
-]
-
-{ #category : #'rendering-table' }
-PSSortedTableComponent >> rowsOfPage [
-	"If the pagination is able show a list by page. If it is not, show the complete list object"
-
-	^ self rowsByPage.
 ]
 
 { #category : #accessing }
@@ -685,16 +702,17 @@ PSSortedTableComponent >> sortAscendingAtRow: aRowIndex [
 
 { #category : #sorting }
 PSSortedTableComponent >> sortAtRow: aRowIndex using: aSelector [
-
 	self header
 		do: [ :each | 
 			(self header at: aRowIndex) = each
 				ifFalse: [ each unsort ] ].
-	(self filteredRows)
-		sort: [ :cell :anotherCell |
-			[ (cell at: aRowIndex) perform: aSelector with: (anotherCell at: aRowIndex) ]
-				on: MessageNotUnderstood
-				do: [ true ]	 ].
+	self sortCollectionwith: aSelector OnRowIndex: aRowIndex
+]
+
+{ #category : #sorting }
+PSSortedTableComponent >> sortCollectionwith: aSelector OnRowIndex: aRowIndex [
+
+	self subclassResponsibility.
 ]
 
 { #category : #sorting }

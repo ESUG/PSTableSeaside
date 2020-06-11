@@ -56,6 +56,18 @@ PSSortedTableCollectionComponent >> rowAtIndex: anIndex [
 	^ self filteredRows at: anIndex
 ]
 
+{ #category : #sorting }
+PSSortedTableCollectionComponent >> sortCollectionwith: aSelector OnRowIndex: aRowIndex [
+
+	self filteredRows
+		sort: [ :cell :anotherCell | 
+			[ (cell at: aRowIndex)
+				perform: aSelector
+				with: (anotherCell at: aRowIndex) ]
+				on: MessageNotUnderstood
+				do: [ true ] ]
+]
+
 { #category : #'rendering-searching' }
 PSSortedTableCollectionComponent >> validateFilterOf: anObject [
 	

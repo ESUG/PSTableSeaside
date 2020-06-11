@@ -1,3 +1,9 @@
+"
+Description
+-----------
+
+I am a header element to option columns
+"
 Class {
 	#name : #PSTableSortableHeaderOptions,
 	#superclass : #Object,
