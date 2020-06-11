@@ -149,6 +149,14 @@ PSSortedTableComponent >> firstPageShowed [
 		ifTrue: [ ^ self position - self limitPageShowed max: self position ]
 ]
 
+{ #category : #'rendering-table' }
+PSSortedTableComponent >> haveAnyRowFiltered [
+	"Return true if there are any row in a filtered result"
+
+	^ self filteredRows isEmpty
+		and: [ self searchingText isNotEmpty ]
+]
+
 { #category : #accessing }
 PSSortedTableComponent >> header [
 
@@ -482,6 +490,17 @@ PSSortedTableComponent >> renderNextButtonsOn: html [
 			self renderLastButtonOn: html ]
 ]
 
+{ #category : #'rendering-table' }
+PSSortedTableComponent >> renderNoResultRowOn: html [
+
+	html tableRow: [
+			html mdlTableCell 
+				colSpan: self header size; 
+				nonNumerical;
+				style: 'text-align: center;'; 
+				with: 'No matching results found' ]
+]
+
 { #category : #'rendering-optionBar' }
 PSSortedTableComponent >> renderOptionBarSectionOn: html [
 
@@ -544,8 +563,10 @@ PSSortedTableComponent >> renderRowsOfPageOn: html [
 
 { #category : #'rendering-table' }
 PSSortedTableComponent >> renderRowsOn: html [
-
-	self renderRowsOfPageOn: html
+	
+	self haveAnyRowFiltered
+		ifTrue: [ self renderNoResultRowOn: html ]
+		ifFalse: [ self renderRowsOfPageOn: html ]
 ]
 
 { #category : #'rendering-searching' }
