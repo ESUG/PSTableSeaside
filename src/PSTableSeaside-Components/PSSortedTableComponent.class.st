@@ -105,7 +105,8 @@ PSSortedTableComponent >> filterByText: aString [
 	self filteredRows: self rows copy.
 	position := 1.
 	searchingText isEmpty
-		ifTrue: [ ^ self ].
+		ifTrue: [ unsortedRows := self rows copy.
+			^ self ].
 	listFiltered := self filteredRows
 		select: [ :object | self validateFilterOf: object ].
 	unsortedRows := listFiltered copy.
