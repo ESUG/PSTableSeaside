@@ -23,7 +23,8 @@ BaselineOfPSTableSeaside >> baseline: spec [
 			spec
 				package: 'PSTableSeaside-Components'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
 				package: 'PSTableSeaside-Demo'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
-				package: 'PSTableSeaside-Tests' with: [ spec requires: 'Seaside3' ] ]
+				package: 'PSTableSeaside-Tests' with: [ spec requires: 'Seaside3' ];
+				package: 'PSTableSeaside-Extensions' ]
 ]
 
 { #category : #initialization }
