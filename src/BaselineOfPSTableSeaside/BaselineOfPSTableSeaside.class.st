@@ -21,20 +21,23 @@ BaselineOfPSTableSeaside >> baseline: spec [
 		do: [
 			self setUpDependencies: spec.
 			spec
-				package: 'PSTableSeaside-Components'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
-				package: 'PSTableSeaside-Demo'  with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];
-				package: 'PSTableSeaside-Tests' with: [ spec requires: 'Seaside3' ];
+				package: 'PSTableSeaside-Components' ;
+					"with: [ spec requires: #('Seaside3' 'MaterialDesignLite') ];"
+				package: 'PSTableSeaside-Demo'  
+					with: [ spec requires: #('PSTableSeaside-Components')]; 
+				package: 'PSTableSeaside-Tests' with: [ spec requires: 'PSTableSeaside-Components' ];
 				package: 'PSTableSeaside-Extensions' ]
 ]
 
 { #category : #initialization }
 BaselineOfPSTableSeaside >> setUpDependencies: spec [
 
-	spec	
+	"for now disable the dependencies"
+	"spec	
 		baseline: 'Seaside3'	
 		with: [ spec	
-				repository: 'github://SeasideSt/Seaside:v3.4.8/repository' ].
-	spec
+				repository: 'github://SeasideSt/Seaside:v3.4.8/repository' ]."
+	"spec
 		baseline: 'MaterialDesignLite'
-		with: [ spec repository: 'github://DuneSt/MaterialDesignLite:v2.4.1/src' ]
+		with: [ spec repository: 'github://DuneSt/MaterialDesignLite:v2.4.1/src' ]"
 ]
