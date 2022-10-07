@@ -33,8 +33,8 @@ BaselineOfPSTableSeaside >> setUpDependencies: spec [
 	spec	
 		baseline: 'Seaside3'	
 		with: [ spec	
-				repository: 'github://SeasideSt/Seaside:v3.4.x/repository' ].
+				repository: 'github://SeasideSt/Seaside:v3.4.8/repository' ].
 	spec
 		baseline: 'MaterialDesignLite'
-		with: [ spec repository: 'github://daniapq/MaterialDesignLite:master/src' ]
+		with: [ spec repository: 'github://DuneSt/MaterialDesignLite:v2.4.1/src' ]
 ]
