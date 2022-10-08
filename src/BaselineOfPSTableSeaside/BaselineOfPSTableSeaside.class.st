@@ -1,9 +1,5 @@
 "
-Description
------------
-
-
-Baseline with all dependencies to PSTableSeaside
+Right now disabling the dependencies because the only user may have dependencies that are looping.
 "
 Class {
 	#name : #BaselineOfPSTableSeaside,
